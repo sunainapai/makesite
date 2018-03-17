@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }} - {{ subtitle }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" type="text/css" href="{{ base_path }}/css/style.css">
+</head>
+
+<body id="{{ slug }}">
+
+<nav>
+<section>
+    <span class="home">
+        <a href="{{ base_path }}/">Home</a>
+    </span>
+    <span class="links">
+        <a href="{{ base_path }}/blog/">Blog</a>
+        <a href="{{ base_path }}/news/">News</a>
+        <a href="{{ base_path }}/contact/">Contact</a>
+        <a href="{{ base_path }}/about/">About</a>
+    </span>
+</section>
+</nav>
+
+<main>
+{{ content }}
+</main>
+
+<footer>
+<section>
+<p>&copy; 2018 Lorem Ipsum</p>
+<p>
+    <a href="https://twitter.com/sunainapai">Twitter</a>
+    <a href="https://github.com/sunainapai">GitHub</a>
+    <a href="https://www.example.com/">Example</a>
+</p>
+</section>
+</footer>
+
+</body>
+</html>
