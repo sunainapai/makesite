@@ -33,6 +33,7 @@ import re
 import glob
 import sys
 import json
+import datetime
 
 from vars import *
 
@@ -141,6 +142,7 @@ def make_pages(src, dst, layout, **params):
 
         # Replace vars in content
         content['content'] = render(content['content'], **params)
+        content['title'] = render(content['title'], **params)
 
         params.update(content)
 
@@ -204,6 +206,7 @@ def main():
         'subtitle': site_vars['subtitle'],
         'author': site_vars['author'],
         'site_url': site_vars['envs'][env]['site_url'],
+        'current_year': datetime.datetime.now().year,
         # Blog vars
         'blog_path': site_vars['blog']['path'],
         'blog_name': site_vars['blog']['name'],
