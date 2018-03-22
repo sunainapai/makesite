@@ -220,7 +220,7 @@ def writeToFile(content, filename):
 
     print(' * Writting sitemap to `%s`' % (filename))
 
-    with open(filename, 'a') as out:
+    with open(filename, 'w') as out:
         out.write(content)
 
 
