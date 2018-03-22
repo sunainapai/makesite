@@ -140,7 +140,7 @@ def make_pages(src, dst, layout, **params):
         content = read_content(src_path)
         items.append(content)
 
-        # Replace vars in content
+        # Replace vars in title and content
         content['content'] = render(content['content'], **params)
         content['title'] = render(content['title'], **params)
 
