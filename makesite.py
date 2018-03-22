@@ -284,7 +284,7 @@ def main():
         section_pages = make_pages(get_content_path(section, s_path) + '/*' + s_ext,
                                    documentroot + '/' + s_path +
                                    '/{{ slug }}/index.html',
-                                   post_layout, blog=s_name, **params)
+                                   post_layout, blog=s_path, **params)
 
         # Section index
         make_list(section_pages, documentroot + '/' + s_path + '/index.html',
