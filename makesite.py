@@ -57,14 +57,14 @@ def get_environment_name():
     return 'default'
 
 
-def import_additionnal_parser():
+def import_additional_parser():
     """Import an eventual parser created by the user"""
     # Parse arguments
     try:
         global add_parser
         import add_parser
     except ImportError as e:
-        print('No additionnal parser found.')
+        print('No additional parser found.')
         pass
 
 
@@ -213,8 +213,8 @@ def main():
     # Get environment name
     env = get_environment_name()
 
-    # Import optional additionnal parser
-    import_additionnal_parser()
+    # Import optional additional parser
+    import_additional_parser()
 
     # Set document root
     documentroot = site_vars['envs'][env]['documentroot']
