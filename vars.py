@@ -19,6 +19,7 @@ site_vars = {
     },
     'subtitle': 'Lorem Ipsum',
     'author': 'Admin',
+    'html_lang': 'en',
     'sections': {
         'blog', 'news'
     },

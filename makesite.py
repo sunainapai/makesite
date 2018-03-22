@@ -39,18 +39,21 @@ from vars import *
 
 
 def get_environment_name():
-    # Parse arguments
-    try:
-        import argparse
-        parser = argparse.ArgumentParser()
-        parser.add_argument("-e", "--env", type=str, help="Environment name",
-                            choices=['dev', 'prod', 'default'], default='default')
-        args = parser.parse_args()
+    if __name__ == '__main__':
+        # Parse arguments
+        try:
+            import argparse
+            parser = argparse.ArgumentParser()
+            parser.add_argument("-e", "--env", type=str, help="Environment name",
+                                choices=['dev', 'prod', 'default'], default='default')
+            args = parser.parse_args()
 
-        return args.env
-    except ImportError as e:
-        print('`argparse` package missing, defaulting to `default` environment.')
-        return 'default'
+            return args.env
+        except ImportError as e:
+            print('`argparse` package missing, defaulting to `default` environment.')
+            pass
+
+    return 'default'
 
 
 def fread(filename):
@@ -141,8 +144,10 @@ def make_pages(src, dst, layout, **params):
         items.append(content)
 
         # Replace vars in title and content
-        content['content'] = render(content['content'], **params)
-        content['title'] = render(content['title'], **params)
+        if 'content' in content:
+            content['content'] = render(content['content'], **params)
+        if 'title' in content:
+            content['title'] = render(content['title'], **params)
 
         params.update(content)
 
@@ -205,6 +210,7 @@ def main():
         'base_path': site_vars['envs'][env]['base_path'],
         'subtitle': site_vars['subtitle'],
         'author': site_vars['author'],
+        'html_lang': site_vars['html_lang'],
         'site_url': site_vars['envs'][env]['site_url'],
         'current_year': datetime.datetime.now().year,
         # Blog vars
