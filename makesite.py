@@ -39,6 +39,7 @@ from vars import *
 
 
 def get_environment_name():
+    """Set environment name"""
     if __name__ == '__main__':
         # Parse arguments
         try:
@@ -54,6 +55,17 @@ def get_environment_name():
             pass
 
     return 'default'
+
+
+def import_additionnal_parser():
+    """Import an eventual parser created by the user"""
+    # Parse arguments
+    try:
+        global add_parser
+        import add_parser
+    except ImportError as e:
+        print('No additionnal parser found.')
+        pass
 
 
 def fread(filename):
@@ -119,6 +131,10 @@ def read_content(filename):
             text = CommonMark.commonmark(text)
         except ImportError as e:
             log('WARNING: Cannot render Markdown in {}: {}', filename, str(e))
+
+    # Optional additional parsing
+    if 'add_parser' in sys.modules:
+        text = add_parser.parse(text, filename)
 
     content.update({
         'content': text,
@@ -196,6 +212,9 @@ def get_content_path(section, path):
 def main():
     # Get environment name
     env = get_environment_name()
+
+    # Import optional additionnal parser
+    import_additionnal_parser()
 
     # Set document root
     documentroot = site_vars['envs'][env]['documentroot']
