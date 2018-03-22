@@ -1,0 +1,14 @@
+"""
+    Rename this file to `add_parser.py` to use this feature.
+
+    The additional parser allows you to manipulate the page HTML before it is rendered.
+"""
+
+
+def parse(text, filename):
+    """Add additional parsing logic"""
+
+    # Add a footnote
+    footnote = '<hr />my footnote'
+
+    return text + footnote

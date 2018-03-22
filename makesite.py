@@ -33,6 +33,39 @@ import re
 import glob
 import sys
 import json
+import datetime
+
+from vars import *
+
+
+def get_environment_name():
+    """Set environment name"""
+    if __name__ == '__main__':
+        # Parse arguments
+        try:
+            import argparse
+            parser = argparse.ArgumentParser()
+            parser.add_argument("-e", "--env", type=str, help="Environment name",
+                                choices=['dev', 'prod', 'default'], default='default')
+            args = parser.parse_args()
+
+            return args.env
+        except ImportError as e:
+            print('`argparse` package missing, defaulting to `default` environment.')
+            pass
+
+    return 'default'
+
+
+def import_additional_parser():
+    """Import an eventual parser created by the user"""
+    # Parse arguments
+    try:
+        global add_parser
+        import add_parser
+    except ImportError as e:
+        print('No additional parser found.')
+        pass
 
 
 def fread(filename):
@@ -99,6 +132,10 @@ def read_content(filename):
         except ImportError as e:
             log('WARNING: Cannot render Markdown in {}: {}', filename, str(e))
 
+    # Optional additional parsing
+    if 'add_parser' in sys.modules:
+        text = add_parser.parse(text, filename)
+
     content.update({
         'content': text,
         'summary': truncate(text),
@@ -121,6 +158,12 @@ def make_pages(src, dst, layout, **params):
     for src_path in glob.glob(src):
         content = read_content(src_path)
         items.append(content)
+
+        # Replace vars in title and content
+        if 'content' in content:
+            content['content'] = render(content['content'], **params)
+        if 'title' in content:
+            content['title'] = render(content['title'], **params)
 
         params.update(content)
 
@@ -149,18 +192,58 @@ def make_list(posts, dst, list_layout, item_layout, **params):
     fwrite(dst_path, output)
 
 
+def get_content_path(section, path):
+    """
+        Returns the directory used to store a section sources
+        Used to prevent the case where somebody would rename the path for the
+        blog section for not rename the `blog` directory in `content/`
+    """
+
+    if os.path.isdir(path):
+        return 'content/' + path
+    elif section == 'blog' and os.path.isdir('content/blog'):
+        return 'content/blog'
+    elif section == 'news' and os.path.isdir('content/news'):
+        return 'content/news'
+
+    return 'content/' + path
+
+
 def main():
-    # Create a new _site directory from scratch.
-    if os.path.isdir('_site'):
-        shutil.rmtree('_site')
-    shutil.copytree('static', '_site')
+    # Get environment name
+    env = get_environment_name()
+
+    # Import optional additional parser
+    import_additional_parser()
+
+    # Set document root
+    documentroot = site_vars['envs'][env]['documentroot']
+
+    # Create a new document root directory from scratch.
+    if os.path.isdir(documentroot):
+        shutil.rmtree(documentroot)
+    shutil.copytree('static', documentroot)
 
     # Default parameters.
     params = {
-        'base_path': '',
-        'subtitle': 'Lorem Ipsum',
-        'author': 'Admin',
-        'site_url': 'http://localhost:8000',
+        'base_path': site_vars['envs'][env]['base_path'],
+        'subtitle': site_vars['subtitle'],
+        'author': site_vars['author'],
+        'html_lang': site_vars['html_lang'],
+        'site_url': site_vars['envs'][env]['site_url'],
+        'current_year': datetime.datetime.now().year,
+        # Blog vars
+        'blog_path': site_vars['blog']['path'],
+        'blog_name': site_vars['blog']['name'],
+        # News vars
+        'news_path': site_vars['news']['path'],
+        'news_name': site_vars['news']['name'],
+        # Contact vars
+        'contact_path': site_vars['contact']['path'],
+        'contact_name': site_vars['contact']['name'],
+        # About vars
+        'about_path': site_vars['about']['path'],
+        'about_name': site_vars['about']['name'],
     }
 
     # If params.json exists, load it.
@@ -180,29 +263,37 @@ def main():
     list_layout = render(page_layout, content=list_layout)
 
     # Create site pages.
-    make_pages('content/_index.html', '_site/index.html',
+    make_pages('content/_index.html', documentroot + '/index.html',
                page_layout, **params)
-    make_pages('content/[!_]*.html', '_site/{{ slug }}/index.html',
+    make_pages('content/[!_]*.html', documentroot + '/{{ slug }}/index.html',
                page_layout, **params)
 
     # Create blogs.
-    blog_posts = make_pages('content/blog/*.md',
-                            '_site/blog/{{ slug }}/index.html',
-                            post_layout, blog='blog', **params)
-    news_posts = make_pages('content/news/*.html',
-                            '_site/news/{{ slug }}/index.html',
-                            post_layout, blog='news', **params)
+    for section in site_vars['sections']:
+        log('Rendering section => {} ...', section)
 
-    # Create blog list pages.
-    make_list(blog_posts, '_site/blog/index.html',
-              list_layout, item_layout, blog='blog', title='Blog', **params)
-    make_list(news_posts, '_site/news/index.html',
-              list_layout, item_layout, blog='news', title='News', **params)
+        # Retrieve section dict
+        section_vars = site_vars.get(section, {})
 
-    make_list(blog_posts, '_site/blog/rss.xml',
-              feed_xml, item_xml, blog='blog', title='Blog', **params)
-    make_list(news_posts, '_site/news/rss.xml',
-              feed_xml, item_xml, blog='news', title='News', **params)
+        # Set section vats or defaults
+        s_path = section_vars.get('path', section)
+        s_ext = section_vars.get('files_extension', '.html')
+        s_name = section_vars.get('name', section.title())
+
+        # Make pages
+        section_pages = make_pages(get_content_path(section, s_path) + '/*' + s_ext,
+                                   documentroot + '/' + s_path +
+                                   '/{{ slug }}/index.html',
+                                   post_layout, blog=s_name, **params)
+
+        # Section index
+        make_list(section_pages, documentroot + '/' + s_path + '/index.html',
+                  list_layout, item_layout, blog=s_path, title=s_name, **params)
+
+        # Section RSS
+        make_list(section_pages, documentroot + '/' + s_path + '/rss.xml',
+                  feed_xml, item_xml, blog=s_path, title=s_name, **params)
+
 
 
 # Test parameter to be set temporarily by unit tests.
