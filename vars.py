@@ -20,6 +20,7 @@ site_vars = {
     'subtitle': 'Lorem Ipsum',
     'author': 'Admin',
     'html_lang': 'en',
+    'date_format': '%b. %e, %Y',
     'sections': {
         'blog', 'news'
     },

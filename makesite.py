@@ -110,7 +110,7 @@ def read_content(filename):
     date_slug = os.path.basename(filename).split('.')[0]
     match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
     content = {
-        'date': match.group(1) or '1970-01-01',
+        'date': dateFormat(match.group(1) or '1970-01-01'),
         'slug': match.group(2),
     }
 
@@ -142,6 +142,16 @@ def read_content(filename):
     })
 
     return content
+
+
+def dateFormat(date):
+    """
+        Change the date format
+    """
+
+    global date_format
+
+    return datetime.datetime.strptime(date, '%Y-%m-%d').strftime(date_format)
 
 
 def render(template, **params):
@@ -214,6 +224,8 @@ def get_content_path(section, path):
 
 
 def main():
+    global date_format
+
     # Get environment name
     env = get_environment_name()
 
@@ -227,6 +239,9 @@ def main():
     if os.path.isdir(documentroot):
         shutil.rmtree(documentroot)
     shutil.copytree('static', documentroot)
+
+    # Set date format
+    date_format = site_vars['date_format']
 
     # Default parameters.
     params = {
