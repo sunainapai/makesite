@@ -27,11 +27,13 @@ site_vars = {
         'name': 'Blog',
         'path': 'blog',
         'files_extension': '.md',
+        'recent_items': 5,
     },
     'news': {
         'name': 'News',
         'path': 'news',
         'files_extension': '.html',
+        'recent_items': 5,
     },
     'contact': {
         'name': 'Contact',

@@ -176,13 +176,17 @@ def make_pages(src, dst, layout, **params):
     return sorted(items, key=lambda x: x['date'], reverse=True)
 
 
-def make_list(posts, dst, list_layout, item_layout, **params):
+def make_list(posts, dst, list_layout, item_layout, limit=None, **params):
     """Generate list page for a blog."""
     items = []
-    for post in posts:
+    for k, post in enumerate(posts):
         item_params = dict(params, **post)
         item = render(item_layout, **item_params)
         items.append(item)
+
+        # Limit to `limit` items
+        if limit is not None and k + 1 >= limit:
+            break
 
     params['content'] = ''.join(items)
     dst_path = render(dst, **params)
@@ -254,19 +258,15 @@ def main():
     page_layout = fread('layout/page.html')
     post_layout = fread('layout/post.html')
     list_layout = fread('layout/list.html')
+    list_layout_recent = fread('layout/list_recent.html')
     item_layout = fread('layout/item.html')
+    item_layout_recent = fread('layout/item_recent.html')
     feed_xml = fread('layout/feed.xml')
     item_xml = fread('layout/item.xml')
 
     # Combine layouts to form final layouts.
     post_layout = render(page_layout, content=post_layout)
     list_layout = render(page_layout, content=list_layout)
-
-    # Create site pages.
-    make_pages('content/_index.html', documentroot + '/index.html',
-               page_layout, **params)
-    make_pages('content/[!_]*.html', documentroot + '/{{ slug }}/index.html',
-               page_layout, **params)
 
     # Create blogs.
     for section in site_vars['sections']:
@@ -279,6 +279,7 @@ def main():
         s_path = section_vars.get('path', section)
         s_ext = section_vars.get('files_extension', '.html')
         s_name = section_vars.get('name', section.title())
+        s_recent_items = section_vars.get('recent_items', 5)
 
         # Make pages
         section_pages = make_pages(get_content_path(section, s_path) + '/*' + s_ext,
@@ -288,12 +289,25 @@ def main():
 
         # Section index
         make_list(section_pages, documentroot + '/' + s_path + '/index.html',
-                  list_layout, item_layout, blog=s_path, title=s_name, **params)
+                  list_layout, item_layout, None, blog=s_path, title=s_name, **params)
 
         # Section RSS
         make_list(section_pages, documentroot + '/' + s_path + '/rss.xml',
-                  feed_xml, item_xml, blog=s_path, title=s_name, **params)
+                  feed_xml, item_xml, None, blog=s_path, title=s_name, **params)
 
+        # Recent items
+        make_list(section_pages, documentroot + '/' + s_path + '/recent.html',
+                  list_layout_recent, item_layout_recent, s_recent_items, blog=s_path, title=s_name, **params)
+
+        # Add the recent items to the params
+        params['recent_' +
+               section] = fread(documentroot + '/' + s_path + '/recent.html')
+
+    # Create site pages.
+    make_pages('content/_index.html', documentroot + '/index.html',
+               page_layout, **params)
+    make_pages('content/[!_]*.html', documentroot + '/{{ slug }}/index.html',
+               page_layout, **params)
 
 
 # Test parameter to be set temporarily by unit tests.
