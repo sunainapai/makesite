@@ -111,6 +111,7 @@ def read_content(filename):
     match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
     content = {
         'date': dateFormat(match.group(1) or '1970-01-01'),
+        'date_ymd': match.group(1) or '1970-01-01',
         'slug': match.group(2),
     }
 
@@ -183,7 +184,7 @@ def make_pages(src, dst, layout, **params):
         log('Rendering {} => {} ...', src_path, dst_path)
         fwrite(dst_path, output)
 
-    return sorted(items, key=lambda x: x['date'], reverse=True)
+    return sorted(items, key=lambda x: x['date_ymd'], reverse=True)
 
 
 def make_list(posts, dst, list_layout, item_layout, limit=None, **params):
