@@ -68,6 +68,6 @@ example:
 	cd /tmp/_site && git push -f origin master
 
 loc:
-	grep -vE '^[[:space:]]*#|^[[:space:]]*$$' makesite.py | wc -l
+	grep -vE '^[[:space:]]*#|^[[:space:]]*$$|^[[:space:]]*"""' makesite.py | wc -l
 
 FORCE:
