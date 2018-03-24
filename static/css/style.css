@@ -77,6 +77,10 @@ footer a {
     margin-right: 1em;
 }
 
+footer a:last-child {
+    margin-right: 0;
+}
+
 
 /* Posts */
 article {
