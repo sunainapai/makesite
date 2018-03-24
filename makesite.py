@@ -57,6 +57,7 @@ def log(msg, *args):
 
 
 def truncate(text, words=25):
+    """Remove tags and truncate text to the specified number of words."""
     return ' '.join(re.sub('(?s)<.*?>', ' ', text).split()[:words])
 
 
@@ -73,7 +74,7 @@ def read_content(filename):
     # Read file content.
     text = fread(filename)
 
-    # Read metadata.
+    # Read metadata and save it in a dictionary.
     date_slug = os.path.basename(filename).split('.')[0]
     match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
     content = {
@@ -99,6 +100,7 @@ def read_content(filename):
         except ImportError as e:
             log('WARNING: Cannot render Markdown in {}: {}', filename, str(e))
 
+    # Update the dictionary with content text and summary text.
     content.update({
         'content': text,
         'summary': truncate(text),
@@ -199,6 +201,7 @@ def main():
     make_list(news_posts, '_site/news/index.html',
               list_layout, item_layout, blog='news', title='News', **params)
 
+    # Create RSS feeds.
     make_list(blog_posts, '_site/blog/rss.xml',
               feed_xml, item_xml, blog='blog', title='Blog', **params)
     make_list(news_posts, '_site/news/rss.xml',
