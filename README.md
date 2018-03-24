@@ -55,14 +55,25 @@ Perhaps the thought of writing your own static site generator crossed
 your mind but you thought it would be too much work? If you answered
 "yes" to these questions, then this project is for you.
 
-With this project, you are in full control. There is no hidden magic!
-Everything is laid out in [makesite.py](makesite.py) as plain and simple
-Python code. It is just 125 lines of code (excluding blank lines
-and comments). It gets you off the ground pretty quickly. You can have a
-decent website/blog generated within a few minutes and then you can
-begin tinkering with the [source code](makesite.py), the
-[layout](layout), and the [css](static/css/style.css) to customize the
-look and feel of your website to your satisfaction.
+With [makesite.py](makesite.py), you are in full control. There is no
+hidden magic! There is no need to read any documentation to understand
+how it works. There is no need to learn how to write configuration files
+to produce some desired effect.
+
+With [makesite.py](makesite.py):
+
+  - The code is the documentation.
+  - The code is the configuration.
+
+Everything is laid out as plain and simple Python code for you to read
+and enhance. It is less than 120 lines of code (excluding comments,
+docstrings, and blank lines). It gets you off the ground pretty quickly.
+You only need to execute `makesite.py`.
+
+You can develop a decent website/blog within a few minutes and then you
+can begin tinkering with the [source code](makesite.py), the
+[layout](layout), and the [stylesheet](static/css/style.css) to
+customize the look and feel of your website to your satisfaction.
 
 
 Get Started
