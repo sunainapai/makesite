@@ -90,6 +90,7 @@ def log(msg, *args):
 
 
 def truncate(text, words=25):
+    """Remove tags and truncate text to the specified number of words."""
     return ' '.join(re.sub('(?s)<.*?>', ' ', text).split()[:words])
 
 
@@ -106,7 +107,7 @@ def read_content(filename):
     # Read file content.
     text = fread(filename)
 
-    # Read metadata.
+    # Read metadata and save it in a dictionary.
     date_slug = os.path.basename(filename).split('.')[0]
     match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
     content = {
@@ -137,6 +138,7 @@ def read_content(filename):
     if 'add_parser' in sys.modules:
         text = add_parser.parse(text, filename)
 
+    # Update the dictionary with content text and summary text.
     content.update({
         'content': text,
         'summary': truncate(text),
