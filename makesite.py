@@ -35,6 +35,8 @@ import sys
 import json
 import datetime
 
+from jinja2 import Template
+
 from vars import *
 
 
@@ -158,10 +160,10 @@ def dateFormat(date):
 
 
 def render(template, **params):
-    """Replace placeholders in template with values from params."""
-    for key, val in params.items():
-        template = re.sub(r'{{\s*' + key + '\s*}}', str(val), template)
-    return template
+    """Use Jinja to render the template"""
+
+    template = Template(template)
+    return template.render(params)
 
 
 def make_pages(src, dst, layout, **params):
