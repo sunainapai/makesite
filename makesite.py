@@ -33,6 +33,7 @@ import re
 import glob
 import sys
 import json
+import datetime
 
 
 def fread(filename):
@@ -163,6 +164,7 @@ def main():
         'subtitle': 'Lorem Ipsum',
         'author': 'Admin',
         'site_url': 'http://localhost:8000',
+        'current_year': datetime.datetime.now().year
     }
 
     # If params.json exists, load it.
