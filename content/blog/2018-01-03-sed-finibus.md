@@ -1,4 +1,6 @@
-<!-- title: Sed Finibus -->
+{% set title = 'Sed Finibus' %}
+{# /variables #}
+
 Sed finibus fermentum convallis. Sed consequat, lacus a pellentesque
 suscipit, lorem libero egestas dui, sit amet volutpat mi dolor sit amet
 nisl. Maecenas faucibus iaculis nibh id gravida. Aenean ac nulla

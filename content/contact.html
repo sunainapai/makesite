@@ -1,4 +1,7 @@
-<!-- title: {{ contact_name }} -->
+{% set title = contact_name %}
+
+{% include 'header.html' %}
+
 <h1>{{ contact_name }}</h1>
 <p>
 In hac habitasse platea dictumst. Suspendisse purus leo, laoreet ac
@@ -19,3 +22,5 @@ tortor libero. Vivamus viverra euismod pulvinar. Fusce maximus, ante
 quis lobortis facilisis, lectus mi consequat purus, sed vestibulum ipsum
 mi sit amet dui.
 </p>
+
+{% include 'footer.html' %}

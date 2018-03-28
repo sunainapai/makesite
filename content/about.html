@@ -1,4 +1,7 @@
-<!-- title: {{ about_name }} -->
+{% set title = about_name %}
+
+{% include 'header.html' %}
+
 <h1>{{ about_name }}</h1>
 <p>
 Quisque quam nisl, egestas nec convallis vitae, fringilla nec mauris.
@@ -21,3 +24,5 @@ fringilla augue ac sodales. Aenean ac nisi sit amet neque pulvinar
 tincidunt ut nec ipsum. Aliquam purus tellus, dignissim a augue
 placerat, aliquet semper turpis. Fusce id lacinia quam, vel porta quam.
 </p>
+
+{% include 'footer.html' %}
