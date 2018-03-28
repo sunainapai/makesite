@@ -55,7 +55,7 @@ example:
 	echo view the example website. >> _site/README.md
 	echo >> _site/README.md
 	echo [makesite]: https://github.com/sunainapai/makesite >> _site/README.md
-	echo [commit]: https://github.com/sunainapai/makesite/commit/$$($(COMMIT)) >> _site/README.md
+	echo [commit]: https://github.com/sunainapai/makesite/commit/$$($(REV)) >> _site/README.md
 	echo [demo]: https://tmug.github.io/makesite-demo >> _site/README.md
 	#
 	# Publish makesite-demo.
