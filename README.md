@@ -13,7 +13,7 @@ This project is a fork from https://github.com/sunainapai/makesite, please visit
 ### Requirements
 
 ```bash
-pip install commonmark Jinja2
+pip install commonmark Jinja2 beautifulsoup4
 ```
 
 ### Compile the website

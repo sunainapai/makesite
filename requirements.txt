@@ -1,2 +1,3 @@
 commonmark
 Jinja2
+beautifulsoup4

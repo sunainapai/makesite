@@ -1,5 +1,9 @@
+{% include 'header.html' %}
+
 <h1>{{ title }}</h1>
 {{ content }}
 <section>
 <a class="rss" href="{{ base_path }}/{{ blog }}/rss.xml">RSS</a>
 </section>
+
+{% include 'footer.html' %}

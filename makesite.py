@@ -35,7 +35,8 @@ import sys
 import json
 import datetime
 
-from jinja2 import Template
+from jinja2 import Template, Environment, FileSystemLoader
+from bs4 import BeautifulSoup
 
 from vars import *
 
@@ -93,15 +94,7 @@ def log(msg, *args):
 
 def truncate(text, words=25):
     """Remove tags and truncate text to the specified number of words."""
-    return ' '.join(re.sub('(?s)<.*?>', ' ', text).split()[:words])
-
-
-def read_headers(text):
-    """Parse headers in text and yield (key, value, end-index) tuples."""
-    for match in re.finditer('\s*<!--\s*(.+?)\s*:\s*(.+?)\s*-->\s*|.+', text):
-        if not match.group(1):
-            break
-        yield match.group(1), match.group(2), match.end()
+    return ' '.join((text).split()[:words])
 
 
 def read_content(filename):
@@ -118,21 +111,18 @@ def read_content(filename):
         'slug': match.group(2),
     }
 
-    # Read headers.
-    end = 0
-    for key, val, end in read_headers(text):
-        content[key] = val
-
-    # Separate content from headers.
-    text = text[end:]
-
     # Convert Markdown content to HTML.
     if filename.endswith(('.md', '.mkd', '.mkdn', '.mdown', '.markdown')):
         try:
             if _test == 'ImportError':
                 raise ImportError('Error forced by test')
             import CommonMark
-            text = CommonMark.commonmark(text)
+
+            # Separate text and template variables
+            variables, text = separate_content_and_variables(text)
+
+            text = variables + "{% include 'md_header.html' %}" + \
+                CommonMark.commonmark(text) + "{% include 'md_footer.html' %}"
         except ImportError as e:
             log('WARNING: Cannot render Markdown in {}: {}', filename, str(e))
 
@@ -143,10 +133,23 @@ def read_content(filename):
     # Update the dictionary with content text and summary text.
     content.update({
         'content': text,
-        'summary': truncate(text),
     })
 
     return content
+
+
+def separate_content_and_variables(text, boundary='{# /variables #}'):
+    """Separate variables and content from a Markdown file"""
+
+    # Find boundary
+    pos = text.find(boundary)
+
+    # Text contains variables
+    if pos > 0:
+        return(text[:pos].strip(), text[(pos + len(boundary)):].strip())
+
+    # Text does not contain variables
+    return ('', text)
 
 
 def dateFormat(date):
@@ -159,10 +162,15 @@ def dateFormat(date):
     return datetime.datetime.strptime(date, '%Y-%m-%d').strftime(date_format)
 
 
-def render(template, **params):
+def render(html, **params):
     """Use Jinja to render the template"""
 
-    template = Template(template)
+    # Load template
+    template = Environment(
+        loader=FileSystemLoader('layout'),
+    ).from_string(html)
+
+    # Return rendered HTML
     return template.render(params)
 
 
@@ -171,19 +179,18 @@ def make_pages(src, dst, layout, **params):
     items = []
 
     for src_path in glob.glob(src):
-        content = read_content(src_path)
-        items.append(content)
+        context = read_content(src_path)
 
-        # Replace vars in title and content
-        if 'content' in content:
-            content['content'] = render(content['content'], **params)
-        if 'title' in content:
-            content['title'] = render(content['title'], **params)
-
-        params.update(content)
+        params.update(context)
 
         dst_path = render(dst, **params)
-        output = render(layout, **params)
+        output = render(context['content'], **params)
+
+        # Add destination path to context
+        context['dest_path'] = dst_path
+
+        # Add item to list
+        items.append(context)
 
         log('Rendering {} => {} ...', src_path, dst_path)
         fwrite(dst_path, output)
@@ -196,6 +203,12 @@ def make_list(posts, dst, list_layout, item_layout, limit=None, **params):
     items = []
     for k, post in enumerate(posts):
         item_params = dict(params, **post)
+
+        # Get title and summary
+        title, summary = get_title_and_summary(item_params['dest_path'])
+        item_params['title'] = title
+        item_params['summary'] = summary
+
         item = render(item_layout, **item_params)
         items.append(item)
 
@@ -209,6 +222,12 @@ def make_list(posts, dst, list_layout, item_layout, limit=None, **params):
 
     log('Rendering list => {} ...', dst_path)
     fwrite(dst_path, output)
+
+
+def get_title_and_summary(path):
+    """Parse post content to retrieve title and a truncated version of the content"""
+    soup = BeautifulSoup(fread(path), 'html.parser')
+    return (soup.find(id="title").text, truncate(soup.find(id="post").text))
 
 
 def get_content_path(section, path):
@@ -275,18 +294,12 @@ def main():
         params.update(json.loads(fread('params.json')))
 
     # Load layouts.
-    page_layout = fread('layout/page.html')
-    post_layout = fread('layout/post.html')
     list_layout = fread('layout/list.html')
     list_layout_recent = fread('layout/list_recent.html')
     item_layout = fread('layout/item.html')
     item_layout_recent = fread('layout/item_recent.html')
     feed_xml = fread('layout/feed.xml')
     item_xml = fread('layout/item.xml')
-
-    # Combine layouts to form final layouts.
-    post_layout = render(page_layout, content=post_layout)
-    list_layout = render(page_layout, content=list_layout)
 
     # Create blogs.
     for section in site_vars['sections']:
@@ -305,7 +318,7 @@ def main():
         section_pages = make_pages(get_content_path(section, s_path) + '/*' + s_ext,
                                    documentroot + '/' + s_path +
                                    '/{{ slug }}/index.html',
-                                   post_layout, blog=s_path, **params)
+                                   None, blog=s_path, **params)
 
         # Section index
         make_list(section_pages, documentroot + '/' + s_path + '/index.html',
@@ -325,9 +338,9 @@ def main():
 
     # Create site pages.
     make_pages('content/_index.html', documentroot + '/index.html',
-               page_layout, **params)
+               None, **params)
     make_pages('content/[!_]*.html', documentroot + '/{{ slug }}/index.html',
-               page_layout, **params)
+               None, **params)
 
 
 # Test parameter to be set temporarily by unit tests.

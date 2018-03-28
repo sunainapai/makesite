@@ -1,5 +1,8 @@
-<!-- title: Lorem Ipsum -->
-<!-- subtitle: Dolor Sit -->
+{% set title = 'Welcome' %}
+{% set subtitle = 'My website' %}
+
+{% include 'header.html' %}
+
 <h1>Lorem Ipsum</h1>
 
 <h2>Recent blog posts</h2>
@@ -33,3 +36,5 @@
     In purus erat, fringilla ut diam et, convallis convallis nunc. Morbi
     sagittis interdum ipsum sit amet fringilla.
 </p>
+
+{% include 'footer.html' %}
