@@ -13,7 +13,7 @@ This project is a fork from https://github.com/sunainapai/makesite, please visit
 ### Requirements
 
 ```bash
-pip install commonmark
+pip install commonmark Jinja2
 ```
 
 ### Compile the website
@@ -27,6 +27,7 @@ python -m SimpleHTTPServer
 ## Features from gabfl/makesite
 
 This fork implements the following features that do not exist in the original version:
+ - Uses [Jinja2](http://jinja.pocoo.org/) to render templates
  - Easy customization with variables stored in [vars.py](vars.py)
  - Multiple environments (`dev`, `prod`...) defined in [vars.py](vars.py). A build for a specific environment can be done with `python makesite.py --env prod`
  - Ability to add additional parsing with a file `add_parser.py` (see [add_parser.py.sample](add_parser.py.sample))
