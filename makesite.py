@@ -331,8 +331,8 @@ def main():
                   item_layout_recent, s_recent_items, blog=s_path, title=s_name, **params)
 
         # Add the recent items to the params
-        params['recent_' +
-               section] = fread(documentroot + '/' + s_path + '/recent.html')
+        params['recent_' + section] = \
+            fread(documentroot + '/' + s_path + '/recent.html')
 
     # Create site pages.
     make_pages('content/_index.html', documentroot + '/index.html',
