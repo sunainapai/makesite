@@ -104,7 +104,7 @@ def read_content(filename):
 
     # Read metadata and save it in a dictionary.
     date_slug = os.path.basename(filename).split('.')[0]
-    match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
+    match = re.search('^(?:(\\d\\d\\d\\d-\\d\\d-\\d\\d)-)?(.+)$', date_slug)
     content = {
         'date': dateFormat(match.group(1) or '1970-01-01'),
         'date_ymd': match.group(1) or '1970-01-01',
@@ -316,9 +316,7 @@ def main():
 
         # Make pages
         section_pages = make_pages(get_content_path(section, s_path) + '/*' + s_ext,
-                                   documentroot + '/' + s_path +
-                                   '/{{ slug }}/index.html',
-                                   None, blog=s_path, **params)
+                                   documentroot + '/' + s_path + '/{{ slug }}/index.html', None, blog=s_path, **params)
 
         # Section index
         make_list(section_pages, documentroot + '/' + s_path + '/index.html',
@@ -329,12 +327,12 @@ def main():
                   feed_xml, item_xml, None, blog=s_path, title=s_name, **params)
 
         # Recent items
-        make_list(section_pages, documentroot + '/' + s_path + '/recent.html',
-                  list_layout_recent, item_layout_recent, s_recent_items, blog=s_path, title=s_name, **params)
+        make_list(section_pages, documentroot + '/' + s_path + '/recent.html', list_layout_recent,
+                  item_layout_recent, s_recent_items, blog=s_path, title=s_name, **params)
 
         # Add the recent items to the params
-        params['recent_' +
-               section] = fread(documentroot + '/' + s_path + '/recent.html')
+        params['recent_' + section] = \
+            fread(documentroot + '/' + s_path + '/recent.html')
 
     # Create site pages.
     make_pages('content/_index.html', documentroot + '/index.html',

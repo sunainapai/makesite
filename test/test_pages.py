@@ -2,7 +2,8 @@ import unittest
 import os
 import shutil
 import makesite
-from test import path
+from . import path
+
 
 class PagesTest(unittest.TestCase):
     def setUp(self):

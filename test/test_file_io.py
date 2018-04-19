@@ -3,7 +3,7 @@ import os
 import shutil
 
 import makesite
-from test import path
+from . import path
 
 
 class FileIOTest(unittest.TestCase):

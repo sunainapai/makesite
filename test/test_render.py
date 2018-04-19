@@ -1,6 +1,7 @@
 import unittest
 import makesite
 
+
 class RenderTest(unittest.TestCase):
     """Tests for render() function."""
 

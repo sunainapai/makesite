@@ -1,19 +1,8 @@
 language: python
-
 python:
-    - "2.7"
-    - "3.3"
-    - "3.4"
-    - "3.5"
-    - "3.6"
-
-install:
-    - pip install commonmark coverage coveralls
-
+  - "3.6"
+before_install:
+  - pip install pycodestyle
 script:
-    - python -m unittest discover -bv
-    - coverage run --branch --source=. -m unittest discover -bv
-    - coverage report -m
-
-after_success:
-    - coveralls
+  - pycodestyle --exclude=venv --ignore=E501,E741 .
+  #- python -m unittest discover -bv
