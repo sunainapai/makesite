@@ -104,7 +104,7 @@ def read_content(filename):
 
     # Read metadata and save it in a dictionary.
     date_slug = os.path.basename(filename).split('.')[0]
-    match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
+    match = re.search('^(?:(\\d\\d\\d\\d-\\d\\d-\\d\\d)-)?(.+)$', date_slug)
     content = {
         'date': dateFormat(match.group(1) or '1970-01-01'),
         'date_ymd': match.group(1) or '1970-01-01',

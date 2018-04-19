@@ -4,6 +4,7 @@ import os
 import makesite
 from test import path
 
+
 class PagesTest(unittest.TestCase):
     def setUp(self):
         self.site_path = path.temppath('site')
@@ -31,7 +32,7 @@ class PagesTest(unittest.TestCase):
         with open(os.path.join(self.site_path, 'list.txt')) as f:
             text = f.read()
         self.assertEqual(text,
-            '<div>val:lorem:<p>val:foo:Foo</p><p>val:bar:Bar</p></div>')
+                         '<div>val:lorem:<p>val:foo:Foo</p><p>val:bar:Bar</p></div>')
 
     def test_dst_params(self):
         posts = [{'content': 'Foo'}, {'content': 'Bar'}]

@@ -4,5 +4,5 @@ python:
 before_install:
   - pip install pycodestyle
 script:
-  - pycodestyle --exclude=venv --ignore=E501 .
+  - pycodestyle --exclude=venv --ignore=E501,E741 .
   - pytest

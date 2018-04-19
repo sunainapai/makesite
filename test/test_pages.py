@@ -4,6 +4,7 @@ import shutil
 import makesite
 from test import path
 
+
 class PagesTest(unittest.TestCase):
     def setUp(self):
         self.blog_path = path.temppath('blog')
