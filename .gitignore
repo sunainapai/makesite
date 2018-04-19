@@ -6,3 +6,4 @@ htmlcov
 *.sw?
 .DS_Store
 venv
+.pytest_cache/

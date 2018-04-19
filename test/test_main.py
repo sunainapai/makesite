@@ -4,7 +4,7 @@ import os
 import shutil
 import json
 
-from test import path
+from . import path
 
 
 class MainTest(unittest.TestCase):
@@ -44,7 +44,8 @@ class MainTest(unittest.TestCase):
         self.assertIn('Published on 2018-01-01 by <b>Admin</b>', s1)
 
         self.assertIn('<link>http://localhost:8000/</link>', s2)
-        self.assertIn('<link>http://localhost:8000/blog/proin-quam/</link>', s2)
+        self.assertIn(
+            '<link>http://localhost:8000/blog/proin-quam/</link>', s2)
 
     def test_json_params(self):
         params = {
@@ -70,4 +71,5 @@ class MainTest(unittest.TestCase):
         self.assertIn('Published on 2018-01-01 by <b>Bar</b>', s1)
 
         self.assertIn('<link>http://localhost/base/</link>', s2)
-        self.assertIn('<link>http://localhost/base/blog/proin-quam/</link>', s2)
+        self.assertIn(
+            '<link>http://localhost/base/blog/proin-quam/</link>', s2)

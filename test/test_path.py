@@ -2,7 +2,7 @@ import unittest
 import os
 import shutil
 
-from test import path
+from . import path
 
 
 class PathTest(unittest.TestCase):

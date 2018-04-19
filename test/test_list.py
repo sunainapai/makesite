@@ -2,7 +2,7 @@ import unittest
 import shutil
 import os
 import makesite
-from test import path
+from . import path
 
 
 class PagesTest(unittest.TestCase):

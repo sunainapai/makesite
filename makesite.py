@@ -316,9 +316,7 @@ def main():
 
         # Make pages
         section_pages = make_pages(get_content_path(section, s_path) + '/*' + s_ext,
-                                   documentroot + '/' + s_path +
-                                   '/{{ slug }}/index.html',
-                                   None, blog=s_path, **params)
+                                   documentroot + '/' + s_path + '/{{ slug }}/index.html', None, blog=s_path, **params)
 
         # Section index
         make_list(section_pages, documentroot + '/' + s_path + '/index.html',
@@ -329,8 +327,8 @@ def main():
                   feed_xml, item_xml, None, blog=s_path, title=s_name, **params)
 
         # Recent items
-        make_list(section_pages, documentroot + '/' + s_path + '/recent.html',
-                  list_layout_recent, item_layout_recent, s_recent_items, blog=s_path, title=s_name, **params)
+        make_list(section_pages, documentroot + '/' + s_path + '/recent.html', list_layout_recent,
+                  item_layout_recent, s_recent_items, blog=s_path, title=s_name, **params)
 
         # Add the recent items to the params
         params['recent_' +

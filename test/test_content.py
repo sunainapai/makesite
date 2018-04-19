@@ -3,7 +3,7 @@ import shutil
 import os
 
 import makesite
-from test import path
+from . import path
 
 
 class ContentTest(unittest.TestCase):
