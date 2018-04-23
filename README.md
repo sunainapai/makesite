@@ -367,8 +367,12 @@ point is not checked for headers.
 
 Credits
 -------
-Thanks to [Susam](https://github.com/susam) for writing the
-documentation and the unit tests.
+Thanks to:
+
+- [Susam](https://github.com/susam) for the documentation and the unit
+  tests.
+- [Keith Gaughan](https://github.com/kgaughan) for an improved
+  single-pass rendering of templates.
 
 
 License
