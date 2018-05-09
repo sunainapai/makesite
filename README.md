@@ -13,15 +13,15 @@ This project is a fork from https://github.com/sunainapai/makesite, please visit
 ### Requirements
 
 ```bash
-pip install commonmark Jinja2 beautifulsoup4
+pip3 install -r requirements.txt
 ```
 
 ### Compile the website
 
 ```bash
-python makesite.py --env dev
+python3 makesite.py --env dev
 cd _site
-python -m SimpleHTTPServer
+python3 -m http.server 8000
 ```
 
 ## Features from gabfl/makesite
