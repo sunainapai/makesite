@@ -1,9 +1,22 @@
-_site
-*.pyc
-__pycache__
+# Python
+__pycache__/
+*.py[cod]
+.Python
+*.egg-info
+build/
+dist/
+.pytest_cache
+venv/
+
+# Codecov
 .coverage
-htmlcov
-*.sw?
+coverage.xml
+
+# Mac
 .DS_Store
-venv
-.pytest_cache/
+
+# Build files
+_site/
+
+# Additional parser
+add_parser.py

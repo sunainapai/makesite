@@ -2,7 +2,15 @@ language: python
 python:
   - "3.6"
 before_install:
-  - pip install pycodestyle
+  - pip install pycodestyle codecov
+  - python3 setup.py install
 script:
-  - pycodestyle --exclude=venv --ignore=E501,E741 .
-  #- python -m unittest discover -bv
+  - pycodestyle --exclude=venv --ignore=E501 .
+  - pytest
+  - coverage run --parallel-mode --branch --source=. -m unittest discover -bv
+  - cp add_parser.py.sample add_parser.py
+  - coverage run --parallel-mode --branch --source=. -m unittest discover -bv
+  - coverage combine
+  - coverage report -m
+after_success:
+  - codecov

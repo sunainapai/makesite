@@ -1,5 +1,9 @@
 makesite.py
 ===========
+
+[![Build Status](https://travis-ci.org/gabfl/makesite.svg?branch=master)](https://travis-ci.org/gabfl/makesite)
+[![codecov](https://codecov.io/gh/gabfl/makesite/branch/master/graph/badge.svg)](https://codecov.io/gh/gabfl/makesite)
+
 Take full control of your static website/blog generation by writing your
 own simple, lightweight, and magic-free static site generator in
 Python. That's right! Reinvent the wheel, fellas!

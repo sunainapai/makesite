@@ -106,7 +106,7 @@ def read_content(filename):
     date_slug = os.path.basename(filename).split('.')[0]
     match = re.search('^(?:(\\d\\d\\d\\d-\\d\\d-\\d\\d)-)?(.+)$', date_slug)
     content = {
-        'date': dateFormat(match.group(1) or '1970-01-01'),
+        'date': format_date(match.group(1) or '1970-01-01'),
         'date_ymd': match.group(1) or '1970-01-01',
         'slug': match.group(2),
     }
@@ -152,7 +152,7 @@ def separate_content_and_variables(text, boundary='{# /variables #}'):
     return ('', text)
 
 
-def dateFormat(date):
+def format_date(date):
     """
         Change the date format
     """
@@ -230,14 +230,14 @@ def get_title_and_summary(path):
     return (soup.find(id="title").text, truncate(soup.find(id="post").text))
 
 
-def get_content_path(section, path):
+def get_content_path(section, path=None):
     """
         Returns the directory used to store a section sources
         Used to prevent the case where somebody would rename the path for the
         blog section for not rename the `blog` directory in `content/`
     """
 
-    if os.path.isdir(path):
+    if path and os.path.isdir(path):
         return 'content/' + path
     elif section == 'blog' and os.path.isdir('content/blog'):
         return 'content/blog'
