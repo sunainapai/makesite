@@ -9,5 +9,5 @@
 <p><a href="{{ site_url }}/{{ blog }}/{{ slug }}/">Read More</a></p>
 ]]>
 </description>
-<pubDate>{{ date }}</pubDate>
+<pubDate>{{ rfc_2822_date }}</pubDate>
 </item>

@@ -70,6 +70,12 @@ def read_headers(text):
         yield match.group(1), match.group(2), match.end()
 
 
+def rfc_2822_format(date_str):
+    """Convert yyyy-mm-dd date string to RFC 2822 format date string."""
+    d = datetime.datetime.strptime(date_str, '%Y-%m-%d')
+    return d.strftime('%a, %d %b %Y %H:%M:%S +0000')
+
+
 def read_content(filename):
     """Read content and metadata from file into a dictionary."""
     # Read file content.
@@ -101,10 +107,11 @@ def read_content(filename):
         except ImportError as e:
             log('WARNING: Cannot render Markdown in {}: {}', filename, str(e))
 
-    # Update the dictionary with content text and summary text.
+    # Update the dictionary with content, summary, and RFC 2822 date.
     content.update({
         'content': text,
         'summary': truncate(text),
+        'rfc_2822_date': rfc_2822_format(content['date'])
     })
 
     return content
