@@ -11,7 +11,6 @@ class ContentTest(unittest.TestCase):
         self.blog_path = path.temppath('blog')
         self.undated_path = os.path.join(self.blog_path, 'foo.txt')
         self.dated_path = os.path.join(self.blog_path, '2018-01-01-foo.txt')
-        self.long_post_path = os.path.join(self.blog_path, 'bar.txt')
         self.normal_post_path = os.path.join(self.blog_path, 'baz.txt')
         self.md_post_path = os.path.join(self.blog_path, 'qux.md')
         self.no_md_post_path = os.path.join(self.blog_path, 'qux.txt')
@@ -23,10 +22,6 @@ class ContentTest(unittest.TestCase):
 
         with open(self.dated_path, 'w') as f:
             f.write('hello world')
-
-        with open(self.long_post_path, 'w') as f:
-            self.long_text = '  \n'.join('word' + str(i) for i in range(50))
-            f.write(self.long_text)
 
         with open(self.normal_post_path, 'w') as f:
             f.write('<!-- a: 1 -->\n<!-- b: 2 -->\nFoo')
@@ -45,13 +40,8 @@ class ContentTest(unittest.TestCase):
         self.mock_args = args
 
     def test_content_content(self):
-        content = makesite.read_content(self.long_post_path)
-        self.assertEqual(content['content'], self.long_text)
-
-    def test_content_summary(self):
-        content = makesite.read_content(self.long_post_path)
-        expected_text = ' '.join('word' + str(i) for i in range(25))
-        self.assertEqual(content['summary'], expected_text)
+        content = makesite.read_content(self.undated_path)
+        self.assertEqual(content['content'], 'hello world')
 
     def test_content_date(self):
         content = makesite.read_content(self.dated_path)

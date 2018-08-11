@@ -107,10 +107,9 @@ def read_content(filename):
         except ImportError as e:
             log('WARNING: Cannot render Markdown in {}: {}', filename, str(e))
 
-    # Update the dictionary with content, summary, and RFC 2822 date.
+    # Update the dictionary with content and RFC 2822 date.
     content.update({
         'content': text,
-        'summary': truncate(text),
         'rfc_2822_date': rfc_2822_format(content['date'])
     })
 
@@ -130,9 +129,16 @@ def make_pages(src, dst, layout, **params):
 
     for src_path in glob.glob(src):
         content = read_content(src_path)
-        items.append(content)
 
         page_params = dict(params, **content) 
+
+        # Populate placeholders in content if content-rendering is enabled.
+        if page_params.get('render') == 'yes':
+            rendered_content = render(page_params['content'], **page_params)
+            page_params['content'] = rendered_content
+            content['content'] = rendered_content
+
+        items.append(content)
 
         dst_path = render(dst, **page_params)
         output = render(layout, **page_params)
@@ -148,6 +154,7 @@ def make_list(posts, dst, list_layout, item_layout, **params):
     items = []
     for post in posts:
         item_params = dict(params, **post)
+        item_params['summary'] = truncate(post['content'])
         item = render(item_layout, **item_params)
         items.append(item)
 

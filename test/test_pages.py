@@ -22,6 +22,10 @@ class PagesTest(unittest.TestCase):
             f.write('<!-- tag: foo -->Foo')
         with open(os.path.join(self.blog_path, 'header-bar.txt'), 'w') as f:
             f.write('<!-- title: bar -->Bar')
+        with open(os.path.join(self.blog_path, 'placeholder-foo.txt'), 'w') as f:
+            f.write('<!-- title: foo -->{{ title }}:{{ author }}:Foo')
+        with open(os.path.join(self.blog_path, 'placeholder-bar.txt'), 'w') as f:
+            f.write('<!-- title: bar --><!-- render: yes -->{{ title }}:{{ author }}:Bar')
 
     def tearDown(self):
         shutil.rmtree(self.blog_path)
@@ -77,3 +81,47 @@ class PagesTest(unittest.TestCase):
             self.assertEqual(f.read(), '{{ title }}:foo:Foo')
         with open(os.path.join(self.site_path, 'header-bar.txt')) as f:
             self.assertEqual(f.read(), 'bar:{{ tag }}:Bar')
+
+    def test_content_no_rendering(self):
+        # Test that placeholders are not populated in content rendering
+        # by default.
+        src = os.path.join(self.blog_path, 'placeholder-foo.txt')
+        dst = os.path.join(self.site_path, '{{ slug }}.txt')
+        tpl = '<div>{{ content }}</div>'
+        makesite.make_pages(src, dst, tpl, author='Admin')
+        with open(os.path.join(self.site_path, 'placeholder-foo.txt')) as f:
+            self.assertEqual(f.read(), '<div>{{ title }}:{{ author }}:Foo</div>')
+
+    def test_content_rendering_via_kwargs(self):
+        # Test that placeholders are populated in content rendering when
+        # requested in make_pages.
+        src = os.path.join(self.blog_path, 'placeholder-foo.txt')
+        dst = os.path.join(self.site_path, '{{ slug }}.txt')
+        tpl = '<div>{{ content }}</div>'
+        makesite.make_pages(src, dst, tpl, author='Admin', render='yes')
+        with open(os.path.join(self.site_path, 'placeholder-foo.txt')) as f:
+            self.assertEqual(f.read(), '<div>foo:Admin:Foo</div>')
+
+    def test_content_rendering_via_header(self):
+        # Test that placeholders are populated in content rendering when
+        # requested in content header.
+        src = os.path.join(self.blog_path, 'placeholder-bar.txt')
+        dst = os.path.join(self.site_path, '{{ slug }}.txt')
+        tpl = '<div>{{ content }}</div>'
+        makesite.make_pages(src, dst, tpl, author='Admin')
+        with open(os.path.join(self.site_path, 'placeholder-bar.txt')) as f:
+            self.assertEqual(f.read(), '<div>bar:Admin:Bar</div>')
+
+    def test_rendered_content_in_summary(self):
+        # Test that placeholders are populated in summary if and only if
+        # content rendering is enabled.
+        src = os.path.join(self.blog_path, 'placeholder*.txt')
+        post_dst = os.path.join(self.site_path, '{{ slug }}.txt')
+        list_dst = os.path.join(self.site_path, 'list.txt')
+        post_layout = ''
+        list_layout = '<div>{{ content }}</div>'
+        item_layout = '<p>{{ summary }}</p>'
+        posts = makesite.make_pages(src, post_dst, post_layout, author='Admin')
+        makesite.make_list(posts, list_dst, list_layout, item_layout)
+        with open(os.path.join(self.site_path, 'list.txt')) as f:
+            self.assertEqual(f.read(), '<div><p>{{ title }}:{{ author }}:Foo</p><p>bar:Admin:Bar</p></div>')
