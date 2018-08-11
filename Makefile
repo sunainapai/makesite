@@ -61,6 +61,8 @@ example:
 	# Publish makesite-demo.
 	mv _site /tmp
 	cd /tmp/_site && git init
+	cd /tmp/_site && git config user.name Makesite
+	cd /tmp/_site && git config user.email makesite@example.com
 	cd /tmp/_site && git add .
 	cd /tmp/_site && git commit -m "Auto-generated with sunainapai/makesite - $$($(REV))"
 	cd /tmp/_site && git remote add origin https://github.com/tmug/makesite-demo.git
