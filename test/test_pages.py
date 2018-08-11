@@ -18,6 +18,10 @@ class PagesTest(unittest.TestCase):
             f.write('Foo')
         with open(os.path.join(self.blog_path, '2018-01-02-bar.txt'), 'w') as f:
             f.write('Bar')
+        with open(os.path.join(self.blog_path, 'header-foo.txt'), 'w') as f:
+            f.write('<!-- tag: foo -->Foo')
+        with open(os.path.join(self.blog_path, 'header-bar.txt'), 'w') as f:
+            f.write('<!-- title: bar -->Bar')
 
     def tearDown(self):
         shutil.rmtree(self.blog_path)
@@ -61,3 +65,15 @@ class PagesTest(unittest.TestCase):
         self.assertEqual(len(posts), 2)
         self.assertEqual(posts[0]['date'], '2018-01-02')
         self.assertEqual(posts[1]['date'], '2018-01-01')
+
+    def test_content_header_params(self):
+        # Test that header params from one post is not used in another
+        # post.
+        src = os.path.join(self.blog_path, 'header*.txt')
+        dst = os.path.join(self.site_path, '{{ slug }}.txt')
+        tpl = '{{ title }}:{{ tag }}:{{ content }}'
+        makesite.make_pages(src, dst, tpl)
+        with open(os.path.join(self.site_path, 'header-foo.txt')) as f:
+            self.assertEqual(f.read(), '{{ title }}:foo:Foo')
+        with open(os.path.join(self.site_path, 'header-bar.txt')) as f:
+            self.assertEqual(f.read(), 'bar:{{ tag }}:Bar')

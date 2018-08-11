@@ -132,10 +132,10 @@ def make_pages(src, dst, layout, **params):
         content = read_content(src_path)
         items.append(content)
 
-        params.update(content)
+        page_params = dict(params, **content) 
 
-        dst_path = render(dst, **params)
-        output = render(layout, **params)
+        dst_path = render(dst, **page_params)
+        output = render(layout, **page_params)
 
         log('Rendering {} => {} ...', src_path, dst_path)
         fwrite(dst_path, output)
