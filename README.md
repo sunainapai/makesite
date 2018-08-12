@@ -66,7 +66,7 @@ With [makesite.py](makesite.py):
   - The code is the configuration.
 
 Everything is laid out as plain and simple Python code for you to read
-and enhance. It is less than 120 lines of code (excluding comments,
+and enhance. It is less than 130 lines of code (excluding comments,
 docstrings, and blank lines). It gets you off the ground pretty quickly.
 You only need to execute `makesite.py`.
 
@@ -364,15 +364,37 @@ It looks for the headers at the top of every content file. As soon as
 some non-header text is encountered, the rest of the content from that
 point is not checked for headers.
 
+By default, placeholders in content files are not populated during
+rendering. This behaviour is chosen so that you can write content freely
+without having to worry about makesite interfering with the content,
+i.e., you can write something like `{{ title }}` in the content and
+makesite would leave it intact by default.
+
+However if you do want to populate the placeholders in a content file,
+you need to specify a parameter named `render` with value of `yes`. This
+can be done in two ways:
+
+  - Specify the parameter in a header in the content file in the
+    following manner:
+
+        <!-- render: yes -->
+
+  - Specify the parameter as a keyword argument in `make_pages` call.
+    For example:
+
+        blog_posts = make_pages('content/blog/*.md',
+                                '_site/blog/{{ slug }}/index.html',
+                                post_layout, blog='blog', render='yes',
+                                **params)
 
 Credits
 -------
 Thanks to:
 
-- [Susam](https://github.com/susam) for the documentation and the unit
-  tests.
-- [Keith Gaughan](https://github.com/kgaughan) for an improved
-  single-pass rendering of templates.
+  - [Susam Pal](https://github.com/susam) for the initial documentation
+    and the initial unit tests.
+  - [Keith Gaughan](https://github.com/kgaughan) for an improved
+    single-pass rendering of templates.
 
 
 License
