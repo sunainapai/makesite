@@ -64,7 +64,7 @@ def truncate(text, words=25):
 
 def read_headers(text):
     """Parse headers in text and yield (key, value, end-index) tuples."""
-    for match in re.finditer('\s*<!--\s*(.+?)\s*:\s*(.+?)\s*-->\s*|.+', text):
+    for match in re.finditer(r'\s*<!--\s*(.+?)\s*:\s*(.+?)\s*-->\s*|.+', text):
         if not match.group(1):
             break
         yield match.group(1), match.group(2), match.end()
@@ -83,7 +83,7 @@ def read_content(filename):
 
     # Read metadata and save it in a dictionary.
     date_slug = os.path.basename(filename).split('.')[0]
-    match = re.search('^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
+    match = re.search(r'^(?:(\d\d\d\d-\d\d-\d\d)-)?(.+)$', date_slug)
     content = {
         'date': match.group(1) or '1970-01-01',
         'slug': match.group(2),
@@ -130,7 +130,7 @@ def make_pages(src, dst, layout, **params):
     for src_path in glob.glob(src):
         content = read_content(src_path)
 
-        page_params = dict(params, **content) 
+        page_params = dict(params, **content)
 
         # Populate placeholders in content if content-rendering is enabled.
         if page_params.get('render') == 'yes':
