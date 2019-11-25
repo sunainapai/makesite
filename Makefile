@@ -1,8 +1,14 @@
+PYTHON3_AVAILABLE := $(shell python3 --version 2>&1)
+
 site:
 	./makesite.py
 
 serve: site
-	cd _site && python -m SimpleHTTPServer 2> /dev/null || python3 -m http.server
+ifeq ('$(PYTHON3_AVAILABLE)','')
+	cd _site && python -m SimpleHTTPServer
+else
+	cd _site && python3 -m http.server
+endif
 
 venv2:
 	virtualenv ~/.venv/makesite
