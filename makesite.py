@@ -200,7 +200,7 @@ def main():
     # Create site pages.
     make_pages('content/_index.html', '_site/index.html',
                page_layout, **params)
-    make_pages('content/[!_]*.html', '_site/{{ slug }}/index.html',
+    make_pages('content/[!_]*.*', '_site/{{ slug }}/index.html',
                page_layout, **params)
 
     # Create blogs.
