@@ -1,14 +1,19 @@
-PYTHON3_AVAILABLE := $(shell python3 --version 2>&1)
-
 site:
 	./makesite.py
 
 serve: site
-ifeq ('$(PYTHON3_AVAILABLE)','')
-	cd _site && python -m SimpleHTTPServer
-else
-	cd _site && python3 -m http.server
-endif
+	if python3 -c 'import http.server' 2> /dev/null; then \
+	    echo Running Python3 http.server ...; \
+	    python3 -m http.server; \
+	elif python -c 'import http.server' 2> /dev/null; then \
+	    echo Running Python http.server ...; \
+	    python -m http.server; \
+	elif python -c 'import SimpleHTTPServer' 2> /dev/null; then \
+	    echo Running Python SimpleHTTPServer ...; \
+	    python -m SimpleHTTPServer; \
+	else \
+	    echo Cannot find Python http.server or SimpleHTTPServer; \
+	fi
 
 venv2:
 	virtualenv ~/.venv/makesite
