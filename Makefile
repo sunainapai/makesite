@@ -4,16 +4,13 @@ site:
 serve: site
 	if python3 -c 'import http.server' 2> /dev/null; then \
 	    echo Running Python3 http.server ...; \
-	    cd _site; \
-	    python3 -m http.server; \
+	    cd _site && python3 -m http.server; \
 	elif python -c 'import http.server' 2> /dev/null; then \
 	    echo Running Python http.server ...; \
-	    cd _site; \
-	    python -m http.server; \
+	    cd _site && python -m http.server; \
 	elif python -c 'import SimpleHTTPServer' 2> /dev/null; then \
 	    echo Running Python SimpleHTTPServer ...; \
-	    cd _site; \
-	    python -m SimpleHTTPServer; \
+	    cd _site && python -m SimpleHTTPServer; \
 	else \
 	    echo Cannot find Python http.server or SimpleHTTPServer; \
 	fi
