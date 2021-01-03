@@ -6,6 +6,11 @@ body {
     font-family: helvetica, arial, sans-serif;
 }
 
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0;
     line-height: 1.2em;
