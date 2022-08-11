@@ -1,3 +1,0 @@
-[report]
-exclude_lines =
-    if __name__ == '__main__':

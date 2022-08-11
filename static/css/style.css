@@ -30,7 +30,7 @@ a:hover, a:active {
 
 /* Single column layout */
 nav section, header section, main, footer section {
-    max-width: 40em;
+    max-width: 80em;
     margin-left: auto;
     margin-right: auto;
     padding: 0 0.5em;
