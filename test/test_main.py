@@ -14,7 +14,7 @@ class MainTest(unittest.TestCase):
 
     def tearDown(self):
         path.move('_site.backup', '_site')
-        path.move('params.json.backup', 'params')
+        path.move('params.json.backup', 'params.json')
 
     def test_site_missing(self):
         makesite.main()
