@@ -24,7 +24,7 @@ jobs:
       - name: Deploy
         run: |
           set -x
-          git clone -q https://"${{ secrets.GITHUB_TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
+          git clone -q https://"${{ secrets.TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
           rm -rf "${{ env.GITHUB_REPO }}"/_site
           mv -f _site "${{ env.GITHUB_REPO }}"/
           pushd "${{ env.GITHUB_REPO }}"
