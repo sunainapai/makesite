@@ -17,15 +17,14 @@ jobs:
         run: make site
 
       - name: Configure Git
-        run: |
-          git config user.name "$(git log -n 1 --pretty=format:%an)"
-          git config user.email "$(git log -n 1 --pretty=format:%ae)"
+        run: |        
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
 
       - name: Deploy
         run: |
           set -x
           git clone -q https://"${{ secrets.GITHUB_TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
-          ls -laR "${{ env.GITHUB_REPO }}"
           rm -rf "${{ env.GITHUB_REPO }}"/_site
           mv -f _site "${{ env.GITHUB_REPO }}"/
           pushd "${{ env.GITHUB_REPO }}"
