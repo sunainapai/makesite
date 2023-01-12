@@ -18,13 +18,14 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "$(git log -n 1 --pretty=format:%an)"
+          git config user.email "$(git log -n 1 --pretty=format:%ae)"
 
       - name: Deploy
         run: |
           set -x
-          git clone -q https://"${{ secrets.PERSONAL_TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
+          git clone -q https://"${{ secrets.GITHUB_TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
+          ls -laR "${{ env.GITHUB_REPO }}"
           rm -rf "${{ env.GITHUB_REPO }}"/_site
           mv -f _site "${{ env.GITHUB_REPO }}"/
           pushd "${{ env.GITHUB_REPO }}"
@@ -35,7 +36,6 @@ jobs:
           popd
           rm -rf "${{ env.GITHUB_REPO }}"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: "atrakic/go-static-site"
           BRANCH: "main"
 
