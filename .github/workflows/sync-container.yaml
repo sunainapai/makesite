@@ -29,9 +29,11 @@ jobs:
           mv -f _site "${{ env.TARGET_GITHUB_REPO }}"/
           pushd "${{ env.TARGET_GITHUB_REPO }}"
           git add -f _site
-          git diff --name-only
-          git commit -m "Sync site pages - [${GITHUB_ACTOR}]: ${{ github.event.repository.html_url }}/commit/${GITHUB_SHA}"
-          git push -u origin "${{ env.TARGET_BRANCH }}"
+          if [ -n "$(git status --porcelain)" ]; then
+            git diff --name-only
+            git commit -m "Sync site pages - [${GITHUB_ACTOR}]: ${{ github.event.repository.html_url }}/commit/${GITHUB_SHA}"
+            git push -u origin "${{ env.TARGET_BRANCH }}"
+          fi
           popd
           rm -rf "${{ env.TARGET_GITHUB_REPO }}"
         env:
