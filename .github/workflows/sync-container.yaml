@@ -31,7 +31,7 @@ jobs:
           git add -f _site
           if [ -n "$(git status --porcelain)" ]; then
             git diff --name-only
-            git commit -m "Sync site pages - [${GITHUB_ACTOR}]: ${{ github.event.repository.html_url }}/commit/${GITHUB_SHA}"
+            git commit -m "Sync site pages: ${{ github.event.repository.html_url }}/commit/${GITHUB_SHA}"
             git push -u origin "${{ env.TARGET_BRANCH }}"
           fi
           popd
