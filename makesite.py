@@ -175,7 +175,7 @@ def main():
     # Default parameters.
     params = {
         'base_path': '',
-        'subtitle': 'Foo Bar',
+        'subtitle': 'Lorem Ipsum',
         'author': 'pwNd',
         'site_url': 'http://localhost:8000',
         'current_year': datetime.datetime.now().year

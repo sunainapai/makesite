@@ -1,6 +1,6 @@
 {
-  "base_path": "makesite",
+  "base_path": "/demo",
   "subtitle": "Foo&Bar",
   "author": "pwNd",
-  "site_url": "http://localhost:8000"
+  "site_url": "https://atrakic.github.io/demo"
 }
