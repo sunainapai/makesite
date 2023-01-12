@@ -6,10 +6,6 @@ on:
       - 'feature/deploy-container'
 permissions:
   contents: read
-env:
-  GITHUB_REPO: "atrakic/go-static-site"
-  BRANCH: "main"
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -20,17 +16,26 @@ jobs:
       - name: Static site generator 
         run: make site
 
-      - name: Deploy
+      - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Deploy
+        run: |
+          set -x
           git clone -q https://"${{ secrets.PERSONAL_TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
           rm -rf "${{ env.GITHUB_REPO }}"/_site
           mv -f _site "${{ env.GITHUB_REPO }}"/
           pushd "${{ env.GITHUB_REPO }}"
           git add -f _site
           git diff --name-only
-          git commit --signoff -m "Sync site pages: ${{ env.GITHUB_SHA }}"
+          git commit -m "Sync site pages: [$GITHUB_ACTOR/${GITHUB_SHA::8}]"
           git push -u origin "${{ env.BRANCH }}"
           popd
           rm -rf "${{ env.GITHUB_REPO }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: "atrakic/go-static-site"
+          BRANCH: "main"
+
