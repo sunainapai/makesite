@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
 jobs:
-  deploy:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
