@@ -24,17 +24,16 @@ jobs:
       - name: Deploy
         run: |
           set -x
-          git clone -q https://"${{ secrets.TOKEN }}"@github.com/"${{ env.GITHUB_REPO }}".git "${{ env.GITHUB_REPO }}"
-          rm -rf "${{ env.GITHUB_REPO }}"/_site
-          mv -f _site "${{ env.GITHUB_REPO }}"/
-          pushd "${{ env.GITHUB_REPO }}"
+          git clone -q https://"${{ secrets.TOKEN }}"@github.com/"${{ env.TARGET_GITHUB_REPO }}".git "${{ env.TARGET_GITHUB_REPO }}"
+          rm -rf "${{ env.TARGET_GITHUB_REPO }}"/_site
+          mv -f _site "${{ env.TARGET_GITHUB_REPO }}"/
+          pushd "${{ env.TARGET_GITHUB_REPO }}"
           git add -f _site
           git diff --name-only
-          git commit -m "Sync site pages: [$GITHUB_ACTOR/${GITHUB_SHA::8}]"
-          git push -u origin "${{ env.BRANCH }}"
+          git commit -m "Sync site pages - [${GITHUB_ACTOR}]: ${{ github.event.repository.html_url }}/commit/${GITHUB_SHA}"
+          git push -u origin "${{ env.TARGET_BRANCH }}"
           popd
-          rm -rf "${{ env.GITHUB_REPO }}"
+          rm -rf "${{ env.TARGET_GITHUB_REPO }}"
         env:
-          GITHUB_REPO: "atrakic/go-static-site"
-          BRANCH: "main"
-
+          TARGET_GITHUB_REPO: "atrakic/go-static-site"
+          TARGET_BRANCH: "main"
