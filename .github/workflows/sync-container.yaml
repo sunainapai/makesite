@@ -1,0 +1,39 @@
+name: sync-container
+on:
+  workflow_dispatch:
+  push:
+    branches: ["master"]
+permissions:
+  contents: read
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Static site generator 
+        run: make site
+
+      - name: Configure Git
+        run: |        
+          git config --global user.name "$(git log -n 1 --pretty=format:%an)"
+          git config --global user.email "$(git log -n 1 --pretty=format:%ae)"
+
+      - name: Deploy
+        run: |
+          set -x
+          git clone -q https://"${{ secrets.TOKEN }}"@github.com/"${{ env.TARGET_GITHUB_REPO }}".git "${{ env.TARGET_GITHUB_REPO }}"
+          rm -rf "${{ env.TARGET_GITHUB_REPO }}"/_site
+          mv -f _site "${{ env.TARGET_GITHUB_REPO }}"/
+          pushd "${{ env.TARGET_GITHUB_REPO }}"
+          git add -f _site
+          git diff --name-only
+          git commit -m "Sync site pages - [${GITHUB_ACTOR}]: ${{ github.event.repository.html_url }}/commit/${GITHUB_SHA}"
+          git push -u origin "${{ env.TARGET_BRANCH }}"
+          popd
+          rm -rf "${{ env.TARGET_GITHUB_REPO }}"
+        env:
+          TARGET_GITHUB_REPO: "atrakic/go-static-site"
+          TARGET_BRANCH: "main"
