@@ -1,6 +1,6 @@
 {
-  "base_path": "/makesite",
+  "base_path": "/blog",
   "subtitle": "Foo&Bar",
   "author": "pwNd",
-  "site_url": "https://atrakic.github.io/makesite"
+  "site_url": "https://atrakic.github.io/blog"
 }
