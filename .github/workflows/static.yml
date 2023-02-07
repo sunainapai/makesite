@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+name: Deploy static content to Gh Pages
 
 on:
   # Runs on pushes targeting the default branch
@@ -29,17 +29,33 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Pages
         uses: actions/configure-pages@v2
-      - run: cp -f config/params.json .
-      - run: make site
+      
+      - name: Set up Python
+        uses: actions/setup-python@@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: python3.10 -m pip install -r requirements.txt --upgrade
+
+      - name: Confifure site
+        run: cp -f config/params.json .
+
+      - name: Generate site
+        run: make site
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: '_site/'
+      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
+      
       - name: Deploy summary
         run: |
           echo "### https://${{ github.repository_owner }}.github.io/static/ :rocket:" >> $GITHUB_STEP_SUMMARY

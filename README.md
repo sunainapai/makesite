@@ -1,1 +1,1 @@
-# static
+# Blog generator
